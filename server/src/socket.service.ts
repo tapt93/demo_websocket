@@ -8,8 +8,9 @@ import {
   WebSocketServer
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { IMessage } from './message/message.model';
-import { IRoom } from './room/room.model';
+import { AuthService } from './auth/auth.service';
+import { IMessage } from './entity/message.entity';
+import { IRoom } from './entity/room.entity';
 
 @WebSocketGateway({
   cors: {
@@ -17,7 +18,7 @@ import { IRoom } from './room/room.model';
   },
 })
 export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
-
+  constructor(private authService: AuthService) { }
 
   @WebSocketServer()
   server: Server;
@@ -33,18 +34,18 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 
 
-  handleConnection(socket: Socket, ...args: any[]) {
+  async handleConnection(socket: Socket, ...args: any[]) {
     console.log('connect')
     //get user token
-    const user = socket.handshake.headers.authorization;
-    console.log(user)
+    const decodedToken = this.authService.verifyJwt(socket.handshake.headers.authorization);
+    console.log(decodedToken)
 
     return this.server.to(socket.id).emit('room', this.room);
     // //get rooms by user
     // if (this.room.users.includes(user)) {
     //   //nếu chưa connect thì add vào list connected
     //   if (!this.room.connectedUser.some(c => c.userId === user)) {
-        
+
     //   }
     // }
   }

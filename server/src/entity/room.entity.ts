@@ -1,4 +1,4 @@
-import { IMessage } from "src/message/message.model";
+import { IMessage } from "src/entity/message.entity";
 
 export interface IRoom {
   id?: number;

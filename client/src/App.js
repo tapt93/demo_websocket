@@ -2,13 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
 import socketIOClient from "socket.io-client";
 
-const host = "http://localhost:3000";
+const socketGatewayHost = "http://localhost:3002";
 
 function App() {
   const [mess, setMess] = useState([]);
   const [message, setMessage] = useState('');
   const [id, setId] = useState();
-  const [user, setUser] = useState('');
+  const [token, setToken] = useState('');
+  const [headerToken, setHeaderToken] = useState('');
 
   const socketRef = useRef(null);
 
@@ -16,15 +17,15 @@ function App() {
 
   useEffect(() => {
     //user test
-    if (!user || (user !== 'user1' && user !== 'user2')) {
+    if (!headerToken) {
       return
     }
     const socketOptions = {
       extraHeaders: {
-        Authorization: user//token
+        Authorization: headerToken//token
       }
     }
-    socketRef.current = socketIOClient(host, socketOptions);
+    socketRef.current = socketIOClient(socketGatewayHost, socketOptions);
 
     //get room conversation info and join in
     socketRef.current.on('room', room => {
@@ -45,14 +46,14 @@ function App() {
     return () => {
       socketRef.current.disconnect();
     };
-  }, [user]);
+  }, [headerToken]);
 
 
   const sendMessage = () => {
     if (message !== null) {
       const msg = {
         content: message,
-        createdBy: user,
+        createdBy: token,
       }
       socketRef.current.emit('send_message', msg)
 
@@ -75,14 +76,14 @@ function App() {
   const renderMess = mess.map((m, index) =>
     <Msg
       key={index}
-      isMine={m.createdBy === user}
+      isMine={m.createdBy === token}
       content={m.content}
       user={m.user}
     />
   )
 
   return (<div className="box-chat">
-    <input value={user} onChange={e => setUser(e.target.value)} />
+    <input value={token} onChange={e => setToken(e.target.value)} /> <button onClick={() => setHeaderToken(token)}>Set token</button>
     <div className="box-chat_message" style={{ 'width': 200, display: 'flex', flexDirection: 'column' }}>
       {renderMess}
     </div>
