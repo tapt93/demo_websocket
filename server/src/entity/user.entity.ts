@@ -1,8 +1,9 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
 import { BaseEntity } from './base.entity';
+import { RoomEntity } from './room.entity';
 
-@Entity()
-export class Users extends BaseEntity {
+@Entity({ name: 'users' })
+export class UserEntity extends BaseEntity {
   @Column({ nullable: true })
   email: string;
 
@@ -21,7 +22,7 @@ export class Users extends BaseEntity {
   @Column({ nullable: true })
   fullName: string;
 
-  @Column({unique: true})
+  @Column({ unique: true })
   mobilePhone: string;
 
   @Column({ default: 2 })

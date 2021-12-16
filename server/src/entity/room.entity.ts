@@ -1,9 +1,21 @@
-import { IMessage } from "src/entity/message.entity";
+import { Column, Entity, JoinTable, ManyToMany, OneToMany } from "typeorm";
+import { BaseEntity } from "./base.entity";
+import { ConnectedDeviceEntity } from "./connected-device.entity";
+import { JoinedRoomEntity } from "./joined-room.entity";
+import { MessageEntity } from "./message.entity";
+import { UserEntity } from "./user.entity";
 
-export interface IRoom {
-  id?: number;
-  name?: string;
-  users?: string[];
-  connectedUser?: { socketId: any; userId: any }[];
-  messages?: IMessage[];
+@Entity({ name: 'room' })
+export class RoomEntity extends BaseEntity {
+  @Column()
+  name: string;
+
+  @Column({ default: false })
+  started: boolean;
+
+  @OneToMany(() => MessageEntity, message => message.room)
+  messages?: MessageEntity[];
+
+  @OneToMany(() => JoinedRoomEntity, joinedRoom => joinedRoom.room)
+  joinedRooms?: JoinedRoomEntity[];
 }

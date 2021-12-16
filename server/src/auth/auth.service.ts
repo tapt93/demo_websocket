@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { UserService } from 'src/service/user.service';
 
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly jwtService: JwtService) { }
+  constructor(
+    private readonly userService: UserService
+  ) { }
 
-  verifyJwt(jwt: string): any {
-    return this.jwtService.verify(jwt, { secret: process.env.JWT_PRIVATE_KEY });
-  }
 
 }
