@@ -9,6 +9,7 @@ function App() {
   const [message, setMessage] = useState('');
   const [id, setId] = useState();
   const [token, setToken] = useState('');
+  const [role, setRole] = useState('');
   const [headerToken, setHeaderToken] = useState('');
 
   const socketRef = useRef(null);
@@ -23,6 +24,9 @@ function App() {
     const socketOptions = {
       extraHeaders: {
         Authorization: headerToken//token
+      },
+      query: {
+        role: 'consumer'
       }
     }
     socketRef.current = socketIOClient(socketGatewayHost, socketOptions);
@@ -30,7 +34,7 @@ function App() {
     //get room conversation info and join in
     socketRef.current.on('room', room => {
       setId(room.id);
-      socketRef.current.emit('join_room');
+      socketRef.current.emit('join_room', room.id);
     });
 
     //receive message from server 
@@ -83,6 +87,8 @@ function App() {
   )
 
   return (<div className="box-chat">
+    <input value={role} onChange={e => setRole(e.target.value)} />
+    <br />
     <input value={token} onChange={e => setToken(e.target.value)} /> <button onClick={() => setHeaderToken(token)}>Set token</button>
     <div className="box-chat_message" style={{ 'width': 200, display: 'flex', flexDirection: 'column' }}>
       {renderMess}

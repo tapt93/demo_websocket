@@ -5,6 +5,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
 import { SocketGateway } from './controller/gateway.controller';
+import { MessageController } from './controller/message.controller';
+import { RoomController } from './controller/room.controller';
 import { ConnectedDeviceService } from './service/connected-device.service';
 import { JoinedRoomService } from './service/joined-room.service';
 import { MessageService } from './service/message.service';
@@ -20,7 +22,7 @@ import { UserService } from './service/user.service';
     }),
     TypeOrmModule.forRoot()
   ],
-  controllers: [AppController],
+  controllers: [AppController, RoomController, MessageController],
   providers: [AppService, AuthService, SocketGateway, JoinedRoomService, RoomService, UserService, MessageService, ConnectedDeviceService],
 })
 export class AppModule { }

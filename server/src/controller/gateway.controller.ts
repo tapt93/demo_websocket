@@ -7,6 +7,7 @@ import {
   WebSocketServer
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { IJoinRoomDTO } from 'src/models/joinRoomDTO';
 import { ConnectedDeviceService } from 'src/service/connected-device.service';
 import { AuthService } from '../auth/auth.service';
 import { JoinedRoomService } from '../service/joined-room.service';
@@ -34,25 +35,28 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleConnection(socket: Socket, ...args: any[]) {
     console.log('connect')
     //get user token
-    if(this.jwtService.verify(socket.handshake.headers.authorization)){
-      return socket.disconnect();
-    }
+    // if (this.jwtService.verify(socket.handshake.headers.authorization, { secret: process.env.JWT_PRIVATE_KEY })) {
+    //   return socket.disconnect();
+    // }
     const decodedToken = this.jwtService.decode(socket.handshake.headers.authorization);
+    //console.log(decodedToken);
+    //return
     const role = socket.handshake.query['role'];
 
     var user = null;
     switch (role) {
       case 'consumer':
         //find in table consumer
-        user = await this.userService.findOne({ mobilePhone: decodedToken['mobilphone'] });
+        user = await this.userService.findOne({ where: { wmobilePhone: decodedToken['mobilePhone'] } });
         break;
       case 'outlet':
         //find in table outlet
-        user = await this.userService.findOne({ mobilePhone: decodedToken['mobilphone'] });
+        user = await this.userService.findOne({ where: { mobilePhone: decodedToken['mobilePhone'] } });
         break;
       default:
         break;
     }
+    console.log({ user })
     if (!user) {
       return socket.disconnect();
     }
