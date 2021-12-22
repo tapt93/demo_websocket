@@ -12,7 +12,7 @@ export class RoomEntity extends BaseEntity {
   started: boolean;
 
   @OneToMany(() => MessageEntity, message => message.room)
-  messages?: MessageEntity[];
+  messages?: Promise<MessageEntity[]>;
 
   @OneToMany(() => JoinedRoomEntity, joinedRoom => joinedRoom.room)
   joinedRooms?: JoinedRoomEntity[];

@@ -1,4 +1,4 @@
-class Error {
+export class Error {
   code = 0;
   message = '';
 
@@ -13,6 +13,12 @@ export class ApiResponse {
   error = new Error();
   data = {};
 
+  /**
+   * 
+   * @param data 
+   * @param status default true = success
+   * @param error 
+   */
   constructor(data = {}, status = true, error = new Error()) {
     this.status = status;
     this.error = error.code !== 0 ? error : null;

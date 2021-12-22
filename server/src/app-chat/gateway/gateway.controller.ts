@@ -31,8 +31,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleConnection(socket: Socket, ...args: any[]) {
     console.log('connect');
 
-    const authToken = socket.handshake.headers.authorization;
-    const role = socket.handshake.query['role'];    
+    const authToken = socket.handshake.headers.authorization; 
 
     //verify and decode token
     try {
@@ -45,24 +44,6 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (!authToken || !decodedToken) {
       return socket.disconnect();
     }
-
-    var user = null;
-    switch (role) {
-      case 'consumer':
-        //find in table consumer
-        user = await this.userService.findOne({ where: { mobilePhone: decodedToken['mobilePhone'] } });
-        break;
-      case 'outlet':
-        //find in table outlet
-        user = await this.userService.findOne({ where: { mobilePhone: decodedToken['mobilePhone'] } });
-        break;
-      default:
-        break;
-    }
-    
-    // if (!user) {
-    //   return socket.disconnect();
-    // }
 
     return this.server.to(socket.id).emit('connected', 'connected');
   }
