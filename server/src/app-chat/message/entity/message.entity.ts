@@ -1,6 +1,6 @@
+import { RoomEntity } from "../../room/entity/room.entity";
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
-import { BaseEntity } from "./base.entity";
-import { RoomEntity } from "./room.entity";
+import { BaseEntity } from "src/shared/base.entity";
 
 @Entity({ name: 'message' })
 export class MessageEntity extends BaseEntity {

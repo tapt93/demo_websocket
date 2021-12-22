@@ -1,6 +1,5 @@
-import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
-import { BaseEntity } from './base.entity';
-import { RoomEntity } from './room.entity';
+import { BaseEntity } from 'src/shared/base.entity';
+import { Column, Entity } from 'typeorm';
 
 @Entity({ name: 'users' })
 export class UserEntity extends BaseEntity {

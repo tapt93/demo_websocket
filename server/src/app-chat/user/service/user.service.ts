@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from 'src/entity/user.entity';
+import { BaseService } from 'src/shared/base.service';
 import { Repository } from 'typeorm';
-import { BaseService } from './base.service';
+import { UserEntity } from '../entity/user.entity';
 
 @Injectable()
 export class UserService extends BaseService<UserEntity> {

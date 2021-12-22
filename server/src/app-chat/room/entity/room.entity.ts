@@ -1,9 +1,7 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToMany } from "typeorm";
-import { BaseEntity } from "./base.entity";
-import { ConnectedDeviceEntity } from "./connected-device.entity";
+import { MessageEntity } from "src/app-chat/message/entity/message.entity";
+import { BaseEntity } from "src/shared/base.entity";
+import { Column, Entity, OneToMany } from "typeorm";
 import { JoinedRoomEntity } from "./joined-room.entity";
-import { MessageEntity } from "./message.entity";
-import { UserEntity } from "./user.entity";
 
 @Entity({ name: 'room' })
 export class RoomEntity extends BaseEntity {

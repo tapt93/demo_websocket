@@ -1,20 +1,14 @@
-import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { Request } from 'express';
-import { AuthService } from 'src/auth/auth.service';
-import { JoinedRoomEntity } from 'src/entity/joined-room.entity';
-import { RoomEntity } from 'src/entity/room.entity';
+import { Body, Controller, Post } from '@nestjs/common';
 import { ApiResponse } from 'src/models/apiResponse';
 import { IJoinRoomDTO } from 'src/models/joinRoomDTO';
-import { JoinedRoomService } from 'src/service/joined-room.service';
-import { RoomService } from 'src/service/room.service';
+import { RoomService } from '../service/room.service';
+import { RoomEntity } from '../entity/room.entity';
+import { JoinedRoomService } from '../service/joined-room.service';
 
 @Controller()
 export class RoomController {
     constructor(private readonly roomService: RoomService,
-        private readonly jwtService: JwtService,
-        private readonly joinedRoomService: JoinedRoomService,
-        private readonly authService: AuthService) { }
+        private readonly joinedRoomService: JoinedRoomService) { }
 
     @Post()
     async getRoom(@Body() joinRoomDTO: IJoinRoomDTO) {

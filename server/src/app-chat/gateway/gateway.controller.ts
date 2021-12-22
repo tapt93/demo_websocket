@@ -1,4 +1,3 @@
-import { JwtService } from '@nestjs/jwt';
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -6,13 +5,12 @@ import {
   WebSocketGateway,
   WebSocketServer
 } from '@nestjs/websockets';
+import { verify } from 'crypto';
 import { Server, Socket } from 'socket.io';
-import { IJoinRoomDTO } from 'src/models/joinRoomDTO';
-import { ConnectedDeviceService } from 'src/service/connected-device.service';
-import { AuthService } from '../auth/auth.service';
-import { JoinedRoomService } from '../service/joined-room.service';
-import { RoomService } from '../service/room.service';
-import { UserService } from '../service/user.service';
+import { ConnectedDeviceService } from 'src/app-chat/connected-device/service/connected-device.service';
+import { AuthService } from 'src/auth/auth.service';
+import { RoomService } from '../room/service/room.service';
+import { UserService } from '../user/service/user.service';
 
 @WebSocketGateway({
   cors: {
@@ -21,33 +19,38 @@ import { UserService } from '../service/user.service';
 })
 export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
-    private authService: AuthService,
     private roomService: RoomService,
-    private joinedRoomService: JoinedRoomService,
     private userService: UserService,
     private connectedDeviceService: ConnectedDeviceService,
-    private jwtService: JwtService,
+    private authService: AuthService,
   ) { }
 
   @WebSocketServer()
   server: Server;
 
   async handleConnection(socket: Socket, ...args: any[]) {
-    console.log('connect')
-    //get user token
-    // if (this.jwtService.verify(socket.handshake.headers.authorization, { secret: process.env.JWT_PRIVATE_KEY })) {
-    //   return socket.disconnect();
-    // }
-    const decodedToken = this.jwtService.decode(socket.handshake.headers.authorization);
-    //console.log(decodedToken);
-    //return
-    const role = socket.handshake.query['role'];
+    console.log('connect');
+
+    const authToken = socket.handshake.headers.authorization;
+    const role = socket.handshake.query['role'];    
+
+    //verify and decode token
+    try {
+      var decodedToken = this.authService.verifyJwt(authToken);
+    } catch (error) {
+      console.log('e', error);
+      return socket.disconnect();
+    }
+
+    if (!authToken || !decodedToken) {
+      return socket.disconnect();
+    }
 
     var user = null;
     switch (role) {
       case 'consumer':
         //find in table consumer
-        user = await this.userService.findOne({ where: { wmobilePhone: decodedToken['mobilePhone'] } });
+        user = await this.userService.findOne({ where: { mobilePhone: decodedToken['mobilePhone'] } });
         break;
       case 'outlet':
         //find in table outlet
@@ -56,10 +59,10 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
       default:
         break;
     }
-    console.log({ user })
-    if (!user) {
-      return socket.disconnect();
-    }
+    
+    // if (!user) {
+    //   return socket.disconnect();
+    // }
 
     return this.server.to(socket.id).emit('connected', 'connected');
   }

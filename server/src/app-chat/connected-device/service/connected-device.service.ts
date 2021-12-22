@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ConnectedDeviceEntity } from 'src/entity/connected-device.entity';
+import { BaseService } from 'src/shared/base.service';
 import { Repository } from 'typeorm';
-import { BaseService } from './base.service';
+import { ConnectedDeviceEntity } from '../entity/connected-device.entity';
 
 @Injectable()
 export class ConnectedDeviceService extends BaseService<ConnectedDeviceEntity> {

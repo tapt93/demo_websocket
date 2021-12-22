@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MessageEntity } from 'src/entity/message.entity';
+import { BaseService } from 'src/shared/base.service';
 import { Repository } from 'typeorm';
-import { BaseService } from './base.service';
+import { MessageEntity } from '../entity/message.entity';
 
 @Injectable()
 export class MessageService extends BaseService<MessageEntity> {

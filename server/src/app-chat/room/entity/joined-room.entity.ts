@@ -1,5 +1,5 @@
+import { BaseEntity } from "src/shared/base.entity";
 import { Column, Entity, ManyToOne } from "typeorm";
-import { BaseEntity } from "./base.entity";
 import { RoomEntity } from "./room.entity";
 
 @Entity({ name: 'joined_room' })

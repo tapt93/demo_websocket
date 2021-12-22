@@ -31,6 +31,10 @@ function App() {
     }
     socketRef.current = socketIOClient(socketGatewayHost, socketOptions);
 
+    socketRef.current.on('connected', data => {
+     console.log(data)
+    });
+
     //get room conversation info and join in
     socketRef.current.on('room', room => {
       setId(room.id);

@@ -1,4 +1,4 @@
-import { BaseEntity } from 'src/entity/base.entity';
+import { BaseEntity } from './base.entity';
 import { DeepPartial, Repository } from 'typeorm';
 
 export abstract class BaseService<T extends BaseEntity> {

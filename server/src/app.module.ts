@@ -1,28 +1,26 @@
 import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthService } from './auth/auth.service';
-import { SocketGateway } from './controller/gateway.controller';
-import { MessageController } from './controller/message.controller';
-import { RoomController } from './controller/room.controller';
-import { ConnectedDeviceService } from './service/connected-device.service';
-import { JoinedRoomService } from './service/joined-room.service';
-import { MessageService } from './service/message.service';
-import { RoomService } from './service/room.service';
-import { UserService } from './service/user.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
+import { ChatModule } from './app-chat/app-chat.module';
 
 @Module({
   imports: [
-    JwtModule.registerAsync({
-      useFactory: async () => ({
-        secret: process.env.JWT_PRIVATE_KEY,
-      }),
+    ConfigModule.forRoot(),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.POSTGRES_HOST,
+      port: parseInt(process.env.POSTGRES_PORT, 10),
+      username: process.env.POSTGRES_USER,
+      password: process.env.POSTGRES_PASSWORD,
+      database: process.env.POSTGRES_DATABASE,
+      autoLoadEntities: true,
+      synchronize: true, // should be "false" in production
     }),
-    TypeOrmModule.forRoot()
+    ChatModule,
   ],
-  controllers: [AppController, RoomController, MessageController],
-  providers: [AppService, AuthService, SocketGateway, JoinedRoomService, RoomService, UserService, MessageService, ConnectedDeviceService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule { }

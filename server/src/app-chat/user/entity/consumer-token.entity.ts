@@ -1,5 +1,5 @@
+import { BaseEntity } from 'src/shared/base.entity';
 import { Column, Entity } from 'typeorm';
-import { BaseEntity } from './base.entity';
 
 @Entity()
 export class ConsumerTokens extends BaseEntity {
